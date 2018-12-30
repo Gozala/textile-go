@@ -324,6 +324,11 @@ func (t *Textile) Start() error {
 		t.cafeService.setAddrs(t.config.Addresses.CafeAPI, t.config.Cafe.Host, *swarmPorts)
 		if t.config.Cafe.Host.Open {
 			t.cafeService.open = true
+			go func() {
+				if err := t.cafeService.Listen(); err != nil {
+					log.Errorf("error listening for contacts %s", err)
+				}
+			}()
 			t.startCafeApi(t.config.Addresses.CafeAPI)
 		}
 

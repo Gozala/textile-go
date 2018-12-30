@@ -41,6 +41,7 @@ const (
 	errForbidden      = "forbidden"
 )
 
+// CafeServiceProtocol is the current service protocol tag
 const CafeServiceProtocol = protocol.ID("/textile/cafe/1.0.0")
 
 // CafeService is a libp2p pinning and offline message service
@@ -104,6 +105,33 @@ func (h *CafeService) Handle(pid peer.ID, env *pb.Envelope) (*pb.Envelope, error
 	default:
 		return nil, nil
 	}
+}
+
+// Listen subscribes to the protocol tag for network-wide requests
+func (h *CafeService) Listen() error {
+	msgs, err := ipfs.Subscribe(h.service.Node, string(CafeServiceProtocol))
+	if err != nil {
+		return err
+	}
+
+	for {
+		select {
+		case msg, ok := <-msgs:
+			if !ok {
+				return nil
+			}
+			fmt.Println(string(msg.Data()))
+			//switch msg.Type {
+			//case ...:
+			//	break
+			//}
+		}
+	}
+}
+
+// PublishContact publishes the local peer's contact info
+func (h *CafeService) PublishContact(hash string) error {
+	return ipfs.Publish(h.service.Node, string(CafeServiceProtocol), []byte(hash))
 }
 
 // Register creates a session with a cafe
