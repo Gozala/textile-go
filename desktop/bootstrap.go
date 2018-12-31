@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	// "errors"
 
 	"github.com/asticode/go-astilectron"
 	"github.com/asticode/go-astilectron-bootstrap"
@@ -35,6 +35,6 @@ func bootstrapApp() {
 			},
 		}},
 	}); err != nil {
-		astilog.Fatal(errors.Wrap(err, "bootstrap failed"))
+		astilog.Fatal(err, "bootstrap failed")
 	}
 }

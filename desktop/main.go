@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"gx/ipfs/QmUJYo4etAQqFfSS2rarFAE97eNGB8ej64YkRT2SmsYD4r/go-ipfs/repo/fsrepo"
-	logger "gx/ipfs/QmcaSwFc5RBg8yCq54QURwEU4nwjfCpjbpmaAm4VbdGLKv/go-logging"
+	// logger "gx/ipfs/QmcaSwFc5RBg8yCq54QURwEU4nwjfCpjbpmaAm4VbdGLKv/go-logging"
 
 	"github.com/asticode/go-astilectron"
 	"github.com/asticode/go-astilectron-bootstrap"
@@ -92,6 +92,10 @@ func start(a *astilectron.Astilectron, w []*astilectron.Window, _ *astilectron.M
 		return err
 	}
 
+	gateway.Host = &gateway.Gateway{
+		Node: node,
+	}
+
 	// bring the node online and startup the gateway
 	if err := node.Start(); err != nil {
 		return err
@@ -160,7 +164,7 @@ func start(a *astilectron.Astilectron, w []*astilectron.Window, _ *astilectron.M
 				})
 
 				// tmp auto-accept thread invites
-				if note.Type == repo.InviteReceivedNotification {
+				if note.Type == repo.InviteReceivedNotification.Description() {
 					go func(tid string) {
 						if _, err := node.AcceptThreadInvite(tid); err != nil {
 							astilog.Error(err)
